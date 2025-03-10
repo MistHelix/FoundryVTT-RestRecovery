@@ -35,7 +35,7 @@
 <div class="form-group">
   <div class="flexcol">
     <div>
-      <label>{localize("DND5E.REST.HitDice.Select")}</label>
+      <label>{localize("DND5E.ShortRestSelect")}</label>
     </div>
     <div class="form-fields">
       <select name="hd" bind:value={selectedHitDice} style="height:26px;">
@@ -43,18 +43,18 @@
           <option value="{hitDice}">{hitDice} ({num} {localize("DND5E.available")})</option>
         {/each}
       </select>
-      <button type="button" style="flex:1" disabled={!enableRollButton} on:click={(event) => { onHitDiceFunction(event) }}>
+      <button type="button" disabled={!enableRollButton} on:click={(event) => { onHitDiceFunction(event) }}>
         <i class="fas fa-dice-d20"></i> {localize("DND5E.Roll")}
       </button>
       {#if autoRollEnabled}
-        <button type="button" style="flex:1" disabled="{disableAutoButton || !enableRollButton}"
+        <button type="button" disabled="{disableAutoButton || !enableRollButton}"
                 on:click={(event) => { onAutoFunction(event) }}>
           <i class="fas fa-redo"></i> {localize("REST-RECOVERY.Dialogs.ShortRest.AutoRoll")}
         </button>
       {/if}
     </div>
     {#if healthData.totalHitDice === 0}
-      <p class="notes">{localize("DND5E.REST.HitDice.None")}</p>
+      <p class="notes">{localize("DND5E.ShortRestNoHD")}</p>
     {/if}
   </div>
 </div>

@@ -9,7 +9,7 @@ import API from "./api.js";
 import { gameSettings } from "./settings.js";
 import SettingsShim from "./formapplications/settings/settings.js";
 import { QuickSetup } from "./formapplications/quick-setup/quick-setup.js";
-import { configureOneDndExhaustion, updateTidy5e, configureExhaustionHooks } from "./helpers.js";
+import { configureOneDndExhaustion, updateTidy5e, updateStatusEffects, configureExhaustionHooks } from "./helpers.js";
 
 Hooks.once("init", () => {
   SocketHandler.initialize();
@@ -20,13 +20,6 @@ Hooks.once("init", () => {
   configureOneDndExhaustion();
   console.log("Rest Recovery 5e | Initialized");
 });
-
-Hooks.once("i18nInit", () => {
-  for (const [key, value] of Object.entries(CONFIG.DND5E.consumableTypes.food.subtypes)) {
-    CONFIG.DND5E.consumableTypes.food.subtypes[key] = game.i18n.localize(value);
-  }
-  CONFIG.DND5E.conditionTypes.exhaustion.reference = game.i18n.localize(CONFIG.DND5E.conditionTypes.exhaustion.reference);
-})
 
 Hooks.once("ready", () => {
   migrate();
@@ -41,3 +34,4 @@ Hooks.once("ready", () => {
 });
 
 Hooks.once("tidy5e-sheet.ready", updateTidy5e);
+Hooks.once("dfreds-convenient-effects.ready", updateStatusEffects);

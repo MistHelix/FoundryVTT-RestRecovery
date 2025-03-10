@@ -51,6 +51,8 @@ const CONSTANTS = {
 
     MAX_HIT_DICE_SPEND_FORMULA: "max-hit-die-spend-formula",
     SHORT_RESOURCES_MULTIPLIER_FORMULA: "short-recovery-resources-formula",
+    SHORT_USES_OTHERS_MULTIPLIER_FORMULA: "short-recovery-uses-others-formula",
+    SHORT_USES_FEATS_MULTIPLIER_FORMULA: "short-recovery-uses-feats-formula",
     SHORT_PACT_SPELLS_MULTIPLIER_FORMULA: "short-recovery-pact-spells-formula",
     SHORT_HP_MULTIPLIER_FORMULA: "short-recovery-hitpoints-formula",
 
@@ -87,6 +89,9 @@ const CONSTANTS = {
     LONG_RESOURCES_MULTIPLIER_FORMULA: "long-recovery-resources-formula",
     LONG_SPELLS_MULTIPLIER_FORMULA: "long-recovery-spells-formula",
     LONG_PACT_SPELLS_MULTIPLIER_FORMULA: "long-pact-recovery-spells-formula",
+    LONG_USES_OTHERS_MULTIPLIER_FORMULA: "long-recovery-uses-others-formula",
+    LONG_USES_FEATS_MULTIPLIER_FORMULA: "long-recovery-uses-feats-formula",
+    LONG_USES_DAILY_MULTIPLIER_FORMULA: "long-recovery-day-formula",
     LONG_REST_ARMOR_HIT_DICE_FORMULA: "long-recovery-heavy-armor-hitdice-formula",
 
     /*-------------------------------------------*
@@ -98,7 +103,6 @@ const CONSTANTS = {
     ARCANE_RECOVERY: "arcane-recovery-feature-name",
     POWER_SURGE: "power-surge-feature-name",
     NATURAL_RECOVERY: "natural-recovery-feature-name",
-    NATURAL_RECOVERY_ACTIVITY: "natural-recovery-activity-name",
     SONG_OF_REST: "song-of-rest-name",
     CHEF_FEAT: "chef-feat-name",
     CHEF_TOOLS: "chef-tools-name",
@@ -143,6 +147,7 @@ const CONSTANTS = {
   },
   
   MODULES: {
+    DFREDS: "dfreds-convenient-effects",
     ALTERNATIVE_EXHAUSTION: "alternative-exhaustion-5e"
   },
 
@@ -174,25 +179,15 @@ const CONSTANTS = {
   
   USING_DEFAULT_LONG_REST_SETTINGS() {
     const settings = this.GET_DEFAULT_SETTINGS();
-    const legacyRules = game.settings.get("dnd5e", "rulesVersion") === "legacy";
     for (const [key, setting] of Object.entries(settings)) {
       if (setting.group !== "longrest") continue;
-      const currSettingValue = game.settings.get(this.MODULE_NAME, key);
-      if (key === CONSTANTS.SETTINGS.HD_MULTIPLIER) {
-        if (legacyRules && currSettingValue !== CONSTANTS.FRACTIONS.HALF) return false;
-        if (!legacyRules && currSettingValue !== CONSTANTS.FRACTIONS.FULL) return false;
-        continue;
-      }
-      if (currSettingValue !== setting.default) return false;
+      if (game.settings.get(this.MODULE_NAME, key) !== setting.default) return false;
     }
     return true;
   },
   
   GET_DEFAULT_SETTINGS() {
-    const settings = foundry.utils.deepClone(CONSTANTS.DEFAULT_SETTINGS);
-    const legacyRules = game.settings.get("dnd5e", "rulesVersion") === "legacy";
-    if (legacyRules) settings[CONSTANTS.SETTINGS.HD_MULTIPLIER].default = CONSTANTS.FRACTIONS.HALF;
-    return settings;
+    return foundry.utils.deepClone(CONSTANTS.DEFAULT_SETTINGS)
   }
 }
 
@@ -231,9 +226,9 @@ CONSTANTS.DEFAULT_SETTINGS = {
     default: CONSTANTS.REST_VARIANTS.NORMAL,
     type: String,
     choices: {
-      [CONSTANTS.REST_VARIANTS.NORMAL]: "SETTINGS.DND5E.VARIANT.Rest.Normal",
-      [CONSTANTS.REST_VARIANTS.GRITTY]: "SETTINGS.DND5E.VARIANT.Rest.Gritty",
-      [CONSTANTS.REST_VARIANTS.EPIC]: "SETTINGS.DND5E.VARIANT.Rest.Epic",
+      [CONSTANTS.REST_VARIANTS.NORMAL]: "SETTINGS.5eRestPHB",
+      [CONSTANTS.REST_VARIANTS.GRITTY]: "SETTINGS.5eRestGritty",
+      [CONSTANTS.REST_VARIANTS.EPIC]: "SETTINGS.5eRestEpic",
       [CONSTANTS.REST_VARIANTS.CUSTOM]: "REST-RECOVERY.Dialogs.QuickSetup.5eRestCustom.Title",
     }
   },
@@ -457,6 +452,7 @@ CONSTANTS.DEFAULT_SETTINGS = {
     hint: "REST-RECOVERY.Settings.ShortRest.ItemUsesRecoveryFraction.Hint",
     scope: "world",
     group: "shortrest",
+    customFormula: CONSTANTS.SETTINGS.SHORT_USES_OTHERS_MULTIPLIER_FORMULA,
     config: false,
     type: String,
     choices: {
@@ -464,14 +460,24 @@ CONSTANTS.DEFAULT_SETTINGS = {
       [CONSTANTS.FRACTIONS.QUARTER]: "REST-RECOVERY.Fractions.Quarter",
       [CONSTANTS.FRACTIONS.HALF]: "REST-RECOVERY.Fractions.Half",
       [CONSTANTS.FRACTIONS.FULL]: "REST-RECOVERY.Fractions.Full",
+      [CONSTANTS.FRACTIONS.CUSTOM]: "REST-RECOVERY.Fractions.Custom",
     },
     default: CONSTANTS.FRACTIONS.FULL,
+  },
+  [CONSTANTS.SETTINGS.SHORT_USES_OTHERS_MULTIPLIER_FORMULA]: {
+    scope: "world",
+    group: "shortrest",
+    config: false,
+    hidden: true,
+    type: String,
+    default: "@uses.max",
   },
   [CONSTANTS.SETTINGS.SHORT_USES_FEATS_MULTIPLIER]: {
     name: "REST-RECOVERY.Settings.ShortRest.FeatUsesRecoveryFraction.Title",
     hint: "REST-RECOVERY.Settings.ShortRest.FeatUsesRecoveryFraction.Hint",
     scope: "world",
     group: "shortrest",
+    customFormula: CONSTANTS.SETTINGS.SHORT_USES_FEATS_MULTIPLIER_FORMULA,
     config: false,
     type: String,
     choices: {
@@ -479,8 +485,17 @@ CONSTANTS.DEFAULT_SETTINGS = {
       [CONSTANTS.FRACTIONS.QUARTER]: "REST-RECOVERY.Fractions.Quarter",
       [CONSTANTS.FRACTIONS.HALF]: "REST-RECOVERY.Fractions.Half",
       [CONSTANTS.FRACTIONS.FULL]: "REST-RECOVERY.Fractions.Full",
+      [CONSTANTS.FRACTIONS.CUSTOM]: "REST-RECOVERY.Fractions.Custom",
     },
     default: CONSTANTS.FRACTIONS.FULL,
+  },
+  [CONSTANTS.SETTINGS.SHORT_USES_FEATS_MULTIPLIER_FORMULA]: {
+    scope: "world",
+    group: "shortrest",
+    config: false,
+    hidden: true,
+    type: String,
+    default: "@uses.max",
   },
   [CONSTANTS.SETTINGS.SHORT_PACT_SPELLS_MULTIPLIER]: {
     name: "REST-RECOVERY.Settings.ShortRest.PactSpellSlotsLongRecoveryFraction.Title",
@@ -556,6 +571,24 @@ CONSTANTS.DEFAULT_SETTINGS = {
     config: false,
     default: false,
     type: Boolean
+  },
+  [CONSTANTS.SETTINGS.EXHAUSTION_INTEGRATION]: {
+    name: "REST-RECOVERY.Settings.LongRest.ExhaustionIntegration.Title",
+    hint: "REST-RECOVERY.Settings.LongRest.ExhaustionIntegration.Hint",
+    scope: "world",
+    group: "longrest",
+    dependsOn: [CONSTANTS.SETTINGS.AUTOMATE_EXHAUSTION, CONSTANTS.SETTINGS.ONE_DND_EXHAUSTION],
+    validate: (settings) => {
+      return !settings.get(CONSTANTS.SETTINGS.AUTOMATE_EXHAUSTION).value || settings.get(CONSTANTS.SETTINGS.ONE_DND_EXHAUSTION).value
+    },
+    config: false,
+    type: String,
+    choices: {
+      [CONSTANTS.FRACTIONS.NONE]: "REST-RECOVERY.Fractions.None",
+      [CONSTANTS.MODULES.DFREDS]: "REST-RECOVERY.Modules.DFreds"
+    },
+    default: CONSTANTS.FRACTIONS.NONE,
+    hidden: true // For now, since was only DFreds CE and that's not currently compatible with any type of exhaustion automation
   },
   [CONSTANTS.SETTINGS.ONE_DND_EXHAUSTION]: {
     name: "REST-RECOVERY.Settings.LongRest.OneDnDExhaustion.Title",
@@ -706,7 +739,7 @@ CONSTANTS.DEFAULT_SETTINGS = {
       [CONSTANTS.FRACTIONS.FULL]: "REST-RECOVERY.Fractions.Full",
       [CONSTANTS.FRACTIONS.CUSTOM]: "REST-RECOVERY.Fractions.Custom",
     },
-    default: CONSTANTS.FRACTIONS.FULL,
+    default: CONSTANTS.FRACTIONS.HALF,
   },
   [CONSTANTS.SETTINGS.HD_MULTIPLIER_FORMULA]: {
     scope: "world",
@@ -835,6 +868,7 @@ CONSTANTS.DEFAULT_SETTINGS = {
     scope: "world",
     group: "longrest",
     customSettingsDialog: true,
+    customFormula: CONSTANTS.SETTINGS.LONG_USES_OTHERS_MULTIPLIER_FORMULA,
     config: false,
     type: String,
     choices: {
@@ -842,8 +876,17 @@ CONSTANTS.DEFAULT_SETTINGS = {
       [CONSTANTS.FRACTIONS.QUARTER]: "REST-RECOVERY.Fractions.Quarter",
       [CONSTANTS.FRACTIONS.HALF]: "REST-RECOVERY.Fractions.Half",
       [CONSTANTS.FRACTIONS.FULL]: "REST-RECOVERY.Fractions.Full",
+      [CONSTANTS.FRACTIONS.CUSTOM]: "REST-RECOVERY.Fractions.Custom",
     },
     default: CONSTANTS.FRACTIONS.FULL,
+  },
+  [CONSTANTS.SETTINGS.LONG_USES_OTHERS_MULTIPLIER_FORMULA]: {
+    scope: "world",
+    group: "longrest",
+    config: false,
+    hidden: true,
+    type: String,
+    default: "@uses.max",
   },
   [CONSTANTS.SETTINGS.LONG_USES_FEATS_MULTIPLIER]: {
     name: "REST-RECOVERY.Settings.LongRest.FeatUsesRecoveryFraction.Title",
@@ -851,6 +894,7 @@ CONSTANTS.DEFAULT_SETTINGS = {
     scope: "world",
     group: "longrest",
     customSettingsDialog: true,
+    customFormula: CONSTANTS.SETTINGS.LONG_USES_FEATS_MULTIPLIER_FORMULA,
     config: false,
     type: String,
     choices: {
@@ -858,8 +902,17 @@ CONSTANTS.DEFAULT_SETTINGS = {
       [CONSTANTS.FRACTIONS.QUARTER]: "REST-RECOVERY.Fractions.Quarter",
       [CONSTANTS.FRACTIONS.HALF]: "REST-RECOVERY.Fractions.Half",
       [CONSTANTS.FRACTIONS.FULL]: "REST-RECOVERY.Fractions.Full",
+      [CONSTANTS.FRACTIONS.CUSTOM]: "REST-RECOVERY.Fractions.Custom",
     },
     default: CONSTANTS.FRACTIONS.FULL,
+  },
+  [CONSTANTS.SETTINGS.LONG_USES_FEATS_MULTIPLIER_FORMULA]: {
+    scope: "world",
+    group: "longrest",
+    config: false,
+    hidden: true,
+    type: String,
+    default: "@uses.max",
   },
   [CONSTANTS.SETTINGS.LONG_USES_DAILY_MULTIPLIER]: {
     name: "REST-RECOVERY.Settings.LongRest.DailyUsesRecoveryFraction.Title",
@@ -867,6 +920,7 @@ CONSTANTS.DEFAULT_SETTINGS = {
     scope: "world",
     group: "longrest",
     customSettingsDialog: true,
+    customFormula: CONSTANTS.SETTINGS.LONG_USES_DAILY_MULTIPLIER_FORMULA,
     config: false,
     type: String,
     choices: {
@@ -874,8 +928,17 @@ CONSTANTS.DEFAULT_SETTINGS = {
       [CONSTANTS.FRACTIONS.QUARTER]: "REST-RECOVERY.Fractions.Quarter",
       [CONSTANTS.FRACTIONS.HALF]: "REST-RECOVERY.Fractions.Half",
       [CONSTANTS.FRACTIONS.FULL]: "REST-RECOVERY.Fractions.Full",
+      [CONSTANTS.FRACTIONS.CUSTOM]: "REST-RECOVERY.Fractions.Custom",
     },
     default: CONSTANTS.FRACTIONS.FULL,
+  },
+  [CONSTANTS.SETTINGS.LONG_USES_DAILY_MULTIPLIER_FORMULA]: {
+    scope: "world",
+    group: "longrest",
+    config: false,
+    hidden: true,
+    type: String,
+    default: "@uses.max",
   },
   [CONSTANTS.SETTINGS.LONG_REST_ARMOR_AUTOMATION]: {
     name: "REST-RECOVERY.Settings.LongRest.AutomateArmor.Title",
@@ -979,6 +1042,16 @@ CONSTANTS.DEFAULT_SETTINGS = {
     default: "REST-RECOVERY.FeatureNames.ArcaneRecovery",
     type: String
   },
+  [CONSTANTS.SETTINGS.POWER_SURGE]: {
+    name: "REST-RECOVERY.Settings.ItemNames.PowerSurge.Title",
+    hint: "REST-RECOVERY.Settings.ItemNames.PowerSurge.Hint",
+    scope: "world",
+    group: "itemnames",
+    config: false,
+    localize: true,
+    default: "REST-RECOVERY.FeatureNames.PowerSurge",
+    type: String
+  },
   [CONSTANTS.SETTINGS.NATURAL_RECOVERY]: {
     name: "REST-RECOVERY.Settings.ItemNames.NaturalRecovery.Title",
     hint: "REST-RECOVERY.Settings.ItemNames.NaturalRecovery.Hint",
@@ -987,16 +1060,6 @@ CONSTANTS.DEFAULT_SETTINGS = {
     config: false,
     localize: true,
     default: "REST-RECOVERY.FeatureNames.NaturalRecovery",
-    type: String
-  },
-  [CONSTANTS.SETTINGS.NATURAL_RECOVERY_ACTIVITY]: {
-    name: "REST-RECOVERY.Settings.ItemNames.NaturalRecoveryActivity.Title",
-    hint: "REST-RECOVERY.Settings.ItemNames.NaturalRecoveryActivity.Hint",
-    scope: "world",
-    group: "itemnames",
-    config: false,
-    localize: true,
-    default: "REST-RECOVERY.FeatureNames.NaturalRecoveryActivity",
     type: String
   },
   [CONSTANTS.SETTINGS.SONG_OF_REST]: {
@@ -1368,6 +1431,8 @@ CONSTANTS.FLAGS.RECOVERY_ENABLED = CONSTANTS.FLAGS.RECOVERY + ".enabled";
 CONSTANTS.FLAGS.RECOVERY_FORMULA = CONSTANTS.FLAGS.RECOVERY + ".custom_formula";
 
 CONSTANTS.FLAGS.CONSUMABLE = baseFlag + "consumable";
+CONSTANTS.FLAGS.CONSUMABLE_ENABLED = CONSTANTS.FLAGS.CONSUMABLE + ".enabled";
+CONSTANTS.FLAGS.CONSUMABLE_TYPE = CONSTANTS.FLAGS.CONSUMABLE + ".type";
 CONSTANTS.FLAGS.CONSUMABLE_DAY_WORTH = CONSTANTS.FLAGS.CONSUMABLE + ".dayWorth";
 CONSTANTS.FLAGS.CONSUMABLE_TYPE_FOOD = "food";
 CONSTANTS.FLAGS.CONSUMABLE_TYPE_WATER = "water";
@@ -1408,12 +1473,6 @@ CONSTANTS.CONSUMABLE = {
   NONE: "none",
   REGULAR: "regular"
 }
-
-CONSTANTS.CONSUMABLE_TYPES = [
-  CONSTANTS.FLAGS.CONSUMABLE_TYPE_FOOD, 
-  CONSTANTS.FLAGS.CONSUMABLE_TYPE_WATER, 
-  CONSTANTS.FLAGS.CONSUMABLE_TYPE_BOTH
-];
 
 CONSTANTS.PATH = `modules/${CONSTANTS.MODULE_NAME}/`;
 

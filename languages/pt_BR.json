@@ -18,7 +18,7 @@
     "FeatureNames": {
       "ArcaneRecovery": "Recuperação Arcana",
       "NaturalRecovery": "Recuperação Natural",
-      "NaturalRecoveryActivity": "Recuperar Espaços de Magia",
+      "PowerSurge": "Surto de Poder",
       "SongOfRest": "Canção do Descanso",
       "ChefFeat": "Chefe",
       "ChefTools": "Utensílios de Cozinheiro",
@@ -33,6 +33,10 @@
     },
     "PatchedRecovery": "O(a) {recoveryName} de {actorName} foi usado(a).",
     "PatchedConsumable": "{itemName} atualizado(a) com usos.",
+    "Modules": {
+      "DFreds": "DFreds Convenient Effects",
+      "CUB": "Combat Utility Belt"
+    },
     "Fractions": {
       "None": "Nenhum",
       "Quarter": "Um Quarto",
@@ -59,7 +63,7 @@
     "Misc": {
       "Food": "Comida",
       "Water": "Água",
-      "Both": "Comida & Água"
+      "Both": "Ambos"
     },
     "NumberToText": {
       "1": "Um",
@@ -629,13 +633,13 @@
           "Title": "Nome da Recuperação Arcana",
           "Hint": "Aqui você pode configurar como a característica Recuperação Arcana de um Mago é chamada em seu jogo. Isso pode ser uma string localizada."
         },
+        "PowerSurge": {
+          "Title": "Nome do Surto de Poder",
+          "Hint": "Aqui você pode configurar como a característica Surto de Poder de um Mago da Guerra é chamada em seu jogo. Isso pode ser uma string localizada."
+        },
         "NaturalRecovery": {
           "Title": "Nome da Recuperação Natural",
-          "Hint": "Aqui você pode configurar como a característica Recuperação Natural de um Druida é chamada em seu jogo. Isso pode ser uma string localizada."
-        },
-        "NaturalRecoveryActivity": {
-          "Title": "Nome da Atividade Recuperação Natural",
-          "Hint": "Aqui você pode configurar como a atividade da característica Recuperação Natural de um Druida é chamada em seu jogo. Isso pode ser uma string localizada."
+          "Hint": "Aqui você pode configurar como a característica Recuperação Natural de um Druida da Terra é chamada em seu jogo. Isso pode ser uma string localizada."
         },
         "SongOfRest": {
           "Title": "Nome da Canção do Descanso",

@@ -18,7 +18,7 @@
     "FeatureNames": {
       "ArcaneRecovery": "Arcane Recovery",
       "NaturalRecovery": "Natural Recovery",
-      "NaturalRecoveryActivity": "Recover Spell Slots",
+      "PowerSurge": "Power Surge",
       "SongOfRest": "Song of Rest",
       "ChefFeat": "Chef",
       "ChefTools": "Cook's Utensils",
@@ -33,6 +33,10 @@
     },
     "PatchedRecovery": "{actorName}'s {recoveryName} has been patched.",
     "PatchedConsumable": "Updated {itemName} with uses.",
+    "Modules": {
+      "DFreds": "DFreds Convenient Effects",
+      "CUB": "Combat Utility Belt"
+    },
     "Fractions": {
       "None": "None",
       "Quarter": "Quarter",
@@ -59,7 +63,7 @@
     "Misc": {
       "Food": "Food",
       "Water": "Water",
-      "Both": "Food & Water"
+      "Both": "Both"
     },
     "NumberToText": {
       "1": "One",
@@ -290,7 +294,7 @@
         "Enabled": "Enabled",
         "Formula": "Formula:",
         "IsConsumable": "Item is consumable",
-        "DayWorth": "One charge is an entire day's worth",
+        "DayWorth": "One charge worth entire day worth",
         "ChargesDescription": "Rest Recovery's food and water system requires the item to have charges to be used - one charge equals one unit of food or water."
       },
       "AbilityUse": {
@@ -623,19 +627,19 @@
         },
         "BardClassName": {
           "Title": "Bard class name",
-          "Hint": "Here you can configure what the Bard class is called in your game. This is used to determine whose Song of Rest to use. This can be a localized string."
+          "Hint": "Here you can configure what the Bard class is called in your game. This is used to determine who's Song of Rest to use. This can be a localized string."
         },
         "ArcaneRecovery": {
           "Title": "Arcane Recovery name",
           "Hint": "Here you can configure what a wizard's Arcane Recovery feature is called in your game. This can be a localized string."
         },
+        "PowerSurge": {
+          "Title": "Power Surge name",
+          "Hint": "Here you can configure what a wizard's Power Surge feature is called in your game. This can be a localized string."
+        },
         "NaturalRecovery": {
           "Title": "Natural Recovery name",
           "Hint": "Here you can configure what a druid's Natural Recovery feature is called in your game. This can be a localized string."
-        },
-        "NaturalRecoveryActivity": {
-          "Title": "Natural Recovery Activity name",
-          "Hint": "Here you can configure what a druid's Natural Recovery activity is called in your game. This can be a localized string."
         },
         "SongOfRest": {
           "Title": "Song of Rest name",
@@ -655,11 +659,11 @@
         },
         "PeriaptItem": {
           "Title": "Periapt of Wound Closure name",
-          "Hint": "Here you can configure what the Periapt of Wound Closure item is called in your game. This can be a localized string."
+          "Hint": "Here you can configure what the Periapt of Would Closure item is called in your game. This can be a localized string."
         },
         "WoundClosureBlessing": {
           "Title": "Blessing of Wound Closure name",
-          "Hint": "Here you can configure what the Blessing of Wound Closure feature is called in your game. This can be a localized string."
+          "Hint": "Here you can configure what the Blessing of Would Closure feature is called in your game. This can be a localized string."
         },
         "BlackBloodFeature": {
           "Title": "Black Blood Healing name",

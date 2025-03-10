@@ -210,7 +210,7 @@
         {/if}
 
         {#if enableRollHitDice}
-          <p>{localize("DND5E.REST.Short.Hint.Normal")}</p>
+          <p>{localize("DND5E.ShortRestHint")}</p>
 
           <HitDieRoller
             bind:selectedHitDice="{selectedHitDice}"
@@ -228,11 +228,11 @@
         {#if promptNewDay || newDay}
           <div class="form-group">
             <label>
-              {localize(!promptNewDay && newDay ? "REST-RECOVERY.Dialogs.ShortRest.ForcedNewDayTitle" : "DND5E.REST.NewDay.Label")}
+              {localize(!promptNewDay && newDay ? "REST-RECOVERY.Dialogs.ShortRest.ForcedNewDayTitle" : "DND5E.NewDay")}
             </label>
             <input type="checkbox" bind:checked={newDay} disabled={!promptNewDay}/>
             <p class="hint">
-              {localize(!promptNewDay && newDay ? "REST-RECOVERY.Dialogs.ShortRest.ForcedNewDayHint" : "DND5E.REST.NewDay.Hint")}
+              {localize(!promptNewDay && newDay ? "REST-RECOVERY.Dialogs.ShortRest.ForcedNewDayHint" : "DND5E.NewDayHint")}
             </p>
           </div>
         {/if}
