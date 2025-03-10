@@ -651,7 +651,7 @@ export default class RestWorkflow {
   }
 
   fetchFeatures() {
-
+    console.log("Features called");
     this.features = {
       bard: false,
       bardFeature: false,
@@ -663,9 +663,7 @@ export default class RestWorkflow {
     const ignoreInactivePlayers = lib.getSetting(CONSTANTS.SETTINGS.IGNORE_INACTIVE_PLAYERS);
 
     let bardLevel = false;
-    let characters = this.config?.options?.actorsToRest?.length
-      ? this.config?.options?.actorsToRest.map(uuid => fromUuidSync(uuid))
-      : game.actors.filter(actor => actor.type === "character" && actor.hasPlayerOwner);
+    let characters = game.actors.filter(actor => actor.type === "character" && actor.hasPlayerOwner);
 
     for (let actor of characters) {
 
@@ -702,7 +700,7 @@ export default class RestWorkflow {
       }
 
     }
-
+    console.log(this.features);
   }
 
   async autoSpendHitDice() {
